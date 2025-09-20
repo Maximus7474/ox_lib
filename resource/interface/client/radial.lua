@@ -304,6 +304,7 @@ function lib.disableRadial(state)
     end
 end
 
+local toggleRadialKey = GetConvarInt('ox:toggleRadialKey', 1) == 1
 lib.addKeybind({
     name = 'ox_lib-radial',
     description = locale('open_radial_menu'),
@@ -339,7 +340,7 @@ lib.addKeybind({
             Wait(0)
         end
     end,
-    -- onReleased = lib.hideRadial,
+    onReleased = toggleRadialKey and nil or lib.hideRadial,
 })
 
 AddEventHandler('onClientResourceStop', function(resource)
