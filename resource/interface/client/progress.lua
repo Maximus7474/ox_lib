@@ -11,6 +11,7 @@ local DisableControlAction = DisableControlAction
 local DisablePlayerFiring = DisablePlayerFiring
 local playerState = LocalPlayer.state
 local createdProps = {}
+local maxProps = GetConvarInt('ox:progressPropLimit', 2)
 
 ---@class ProgressPropProps
 ---@field model string
@@ -90,7 +91,7 @@ local function startProgress(data)
     end
 
     if data.prop then
-        playerState:set('lib:progressProps', data.prop, true)
+        TriggerServerEvent('ox_lib:progressProps', data.prop)
     end
 
     local disable = data.disable
@@ -137,7 +138,7 @@ local function startProgress(data)
     end
 
     if data.prop then
-        playerState:set('lib:progressProps', nil, true)
+        TriggerServerEvent('ox_lib:progressProps', nil)
     end
 
     if anim then
@@ -258,7 +259,8 @@ AddStateBagChangeHandler('lib:progressProps', nil, function(bagName, key, value,
     if value.model then
         playerProps[#playerProps + 1] = createProp(ped, value)
     else
-        for i = 1, #value do
+        local propCount = math.min(maxProps, #value)
+        for i = 1, propCount do
             local prop = value[i]
 
             if prop then
